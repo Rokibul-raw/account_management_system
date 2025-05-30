@@ -1,4 +1,5 @@
 ﻿using AMS.Model;
+using ClosedXML.Excel;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -47,6 +48,36 @@ namespace AMS.Service
             }
 
             return list;
+        }
+
+        public MemoryStream ExportToExcelFromList(List<VoucherViewDTO> data)
+        {
+            var dt = new DataTable("Vouchers");
+            dt.Columns.AddRange(new[]
+            {
+                new DataColumn("Voucher ID"),
+                new DataColumn("Date"),
+                new DataColumn("Reference No"),
+                new DataColumn("Type"),
+                new DataColumn("Account Name"),
+                new DataColumn("Debit"),
+                new DataColumn("Credit"),
+                new DataColumn("Narration")
+            });
+
+            foreach (var item in data)
+            {
+                dt.Rows.Add(item.VoucherID, item.VoucherDate.ToShortDateString(), item.ReferenceNo,
+                            item.VoucherType, item.AccountName, item.DebitAmount, item.CreditAmount, item.Narration);
+            }
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add(dt, "Voucher Report");
+
+            var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+            return stream;
         }
 
     }

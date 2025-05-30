@@ -20,5 +20,20 @@ namespace AMS.Pages.Report
         {
             Vouchers = await _reportService.GetVoucherListAsync();
         }
+
+
+        public async Task<IActionResult> OnPostExport()
+        {
+           
+            var exportData =await _reportService.GetVoucherListAsync(); 
+
+            var stream = _reportService.ExportToExcelFromList(exportData);
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "VoucherReport.xlsx"
+            );
+        }
     }
 }
