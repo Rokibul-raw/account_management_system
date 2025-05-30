@@ -14,17 +14,19 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
-
+builder.Services.AddScoped<ModuleService>();
 // Add services to the container.
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    await RoleSeeder.SeedRolesAsync(services);
-    await RoleSeeder.SeedUsersAsync(services);
-}
+
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    await RoleSeeder.SeedRolesAsync(services);
+//    await RoleSeeder.SeedUsersAsync(services);
+//}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

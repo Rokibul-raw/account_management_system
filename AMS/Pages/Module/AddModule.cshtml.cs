@@ -21,8 +21,10 @@ namespace AMS.Pages.Module
         public string ModuleName { get; set; }
 
         [BindProperty]
-        public string SelectedRole { get; set; }
+        public string ModuleUrl { get; set; }  
 
+        [BindProperty]
+        public string SelectedRole { get; set; }
         public List<SelectListItem> Roles { get; set; }
 
         public void OnGet()
@@ -34,11 +36,15 @@ namespace AMS.Pages.Module
             new("Viewer", "Viewer")
         };
         }
-    
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid || string.IsNullOrEmpty(ModuleName) || string.IsNullOrEmpty(SelectedRole))
+            if (!ModelState.IsValid
+                || string.IsNullOrEmpty(ModuleName)
+                || string.IsNullOrEmpty(ModuleUrl)
+                || string.IsNullOrEmpty(SelectedRole))
+            {
                 return Page();
+            }
 
             using (var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
@@ -46,6 +52,7 @@ namespace AMS.Pages.Module
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@ModuleName", ModuleName);
+                    command.Parameters.AddWithValue("@ModuleUrl", ModuleUrl);   
                     command.Parameters.AddWithValue("@RoleName", SelectedRole);
 
                     await connection.OpenAsync();
@@ -56,5 +63,6 @@ namespace AMS.Pages.Module
             TempData["Success"] = "Module added and assigned to role successfully!";
             return RedirectToPage("AddModule");
         }
+
     }
 }

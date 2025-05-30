@@ -8,9 +8,13 @@
 <h2>Add Module</h2>
 
 <form method="post">
+   
     <label>Module Name:</label>
     <input asp-for="ModuleName" required class="form-control" />
 
+     <label>Module URL</label>
+     <input asp-for="ModuleUrl" class="form-control" required />
+  
     <label>Assign to Role:</label>
     <select asp-for="SelectedRole" asp-items="Model.Roles" class="form-control" required></select>
 
