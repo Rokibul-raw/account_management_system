@@ -15,6 +15,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 builder.Services.AddScoped<ModuleService>();
+builder.Services.AddScoped<ChartOfAccountService>();
 // Add services to the container.
 builder.Services.AddRazorPages();
 

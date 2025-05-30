@@ -1,0 +1,45 @@
+﻿@page
+@model ChartOfAccountsModel
+@{
+    ViewData["Title"] = "Chart of Accounts";
+}
+
+<h2>Chart of Accounts</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="NewAccount.AccountName" class="form-label">Account Name</label>
+        <input asp-for="NewAccount.AccountName" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="NewAccount.AccountType" class="form-label">Account Type</label>
+        <input asp-for="NewAccount.AccountType" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="NewAccount.ParentId" class="form-label">Parent Account</label>
+        <select asp-for="NewAccount.ParentId" class="form-control">
+            <option value="">-- Top Level --</option>
+            @foreach (var acc in Model.AllAccounts)
+            {
+                <option value="@acc.Id">@acc.AccountName</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Account</button>
+
+
+    <hr />
+    <h4>Account Tree</h4>
+    <partial name="_PartialAccountTreeNode" model="Model.AllAccounts" />
+
+</form>
+
+<hr />

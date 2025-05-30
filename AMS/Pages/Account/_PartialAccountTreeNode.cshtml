@@ -1,0 +1,15 @@
+﻿@using AMS.Model
+@model List<ChartOfAccount>
+
+<ul>
+    @foreach (var item in Model)
+    {
+        <li>
+            @item.AccountName
+            @if (item.Children?.Any() == true)
+            {
+                @await Html.PartialAsync("_PartialAccountTreeNode", item.Children)
+            }
+        </li>
+    }
+</ul>
