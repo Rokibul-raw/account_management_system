@@ -1,4 +1,24 @@
 ﻿@page
-@model AMS.Pages.Module.AddModuleModel
+@model AddModuleModel
+
 @{
+    ViewData["Title"] = "Add Module";
+}
+
+<h2>Add Module</h2>
+
+<form method="post">
+    <label>Module Name:</label>
+    <input asp-for="ModuleName" required class="form-control" />
+
+    <label>Assign to Role:</label>
+    <select asp-for="SelectedRole" asp-items="Model.Roles" class="form-control" required></select>
+
+    <br />
+    <button type="submit" class="btn btn-primary">Add Module</button>
+</form>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
 }
