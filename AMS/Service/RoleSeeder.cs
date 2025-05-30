@@ -16,5 +16,23 @@ namespace AMS.Service
             }
         }
 
+        public static async Task SeedUsersAsync(IServiceProvider serviceProvider)
+        {
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var user = await userManager.FindByEmailAsync("admin@account.com");
+
+            if (user == null)
+            {
+                user = new IdentityUser
+                {
+                    UserName = "admin@account.com",
+                    Email = "admin@account.com",
+                    EmailConfirmed = true
+                };
+                await userManager.CreateAsync(user, "Admin@123");
+                await userManager.AddToRoleAsync(user, "Admin");
+            }
+        }
+
     }
 }
