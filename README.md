@@ -8,6 +8,8 @@
 then run the project again comment it 
 3.Run this query for Create this table 
 
+
+
 CREATE TABLE ChartOfAccounts (
     Id INT PRIMARY KEY IDENTITY,
     AccountName NVARCHAR(100) NOT NULL,
@@ -64,7 +66,17 @@ CREATE TABLE [dbo].[RoleModules]
 store procidure:1
 --Add module with role
 
-ALTER PROCEDURE AddModuleAndAssignToRole
+USE [AccountDB]
+GO
+
+/****** Object:  StoredProcedure [dbo].[AddModuleAndAssignToRole]    Script Date: 5/31/2025 2:04:40 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[AddModuleAndAssignToRole]
     @ModuleName NVARCHAR(100),
     @ModuleUrl NVARCHAR(200),
     @RoleName NVARCHAR(50)
@@ -91,9 +103,10 @@ BEGIN
         SELECT 1 FROM RoleModules WHERE RoleName = @RoleName AND ModuleId = @ModuleId
     )
     BEGIN
-        INSERT INTO		RoleModules (RoleName, ModuleId) VALUES (@RoleName, @ModuleId)
+        INSERT INTO RoleModules (RoleName, ModuleId) VALUES (@RoleName, @ModuleId)
     END
 END
+GO
 
 
 
