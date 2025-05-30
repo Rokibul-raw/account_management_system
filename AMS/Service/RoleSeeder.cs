@@ -32,6 +32,23 @@ namespace AMS.Service
                 await userManager.CreateAsync(user, "Admin@123");
                 await userManager.AddToRoleAsync(user, "Admin");
             }
+
+            var accountantEmail = "accountant@example.com";
+            if (await userManager.FindByEmailAsync(accountantEmail) == null) 
+            {
+                var Auser = new IdentityUser { UserName = accountantEmail, Email = accountantEmail };
+                await userManager.CreateAsync(Auser, "Accountant@123");
+                await userManager.AddToRoleAsync(Auser, "Accountant");
+            }
+
+
+            var normalUserEmail = "user@example.com";
+            if (await userManager.FindByEmailAsync(normalUserEmail) == null)
+            {
+                var Nuser = new IdentityUser { UserName = normalUserEmail, Email = normalUserEmail };
+                await userManager.CreateAsync(Nuser, "User@123");
+                await userManager.AddToRoleAsync(Nuser, "Viewer");
+            }
         }
 
     }
