@@ -1,0 +1,39 @@
+﻿@page
+@model ReportModel
+@{
+    ViewData["Title"] = "Create Voucher";
+}
+
+<h3>Voucher List</h3>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Voucher #</th>
+            <th>Date</th>
+            <th>Ref No</th>
+            <th>Type</th>
+            <th>Account</th>
+            <th>Type</th>
+            <th>Debit</th>
+            <th>Credit</th>
+            <th>Narration</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Vouchers)
+        {
+            <tr>
+                <td>@item.VoucherID</td>
+                <td>@item.VoucherDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.ReferenceNo</td>
+                <td>@item.VoucherType</td>
+                <td>@item.AccountName</td>
+                <td>@item.AccountType</td>
+                <td>@item.DebitAmount.ToString("N2")</td>
+                <td>@item.CreditAmount.ToString("N2")</td>
+                <td>@item.Narration</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,76 @@
+﻿@page
+@model VoucherModel
+@{
+    ViewData["Title"] = "Create Voucher";
+}
+
+
+<h2>Create Voucher</h2>
+
+<form method="post">
+    <div>
+        <label>Voucher Date:</label>
+        <input asp-for="VoucherHeader.VoucherDate" type="date" class="form-control" />
+    </div>
+
+    <div>
+        <label>Reference No:</label>
+        <input asp-for="VoucherHeader.ReferenceNo" class="form-control" />
+    </div>
+
+    <div>
+        <label>Voucher Type:</label>
+        <select asp-for="VoucherHeader.VoucherType" class="form-control">
+            <option value="Journal">Journal</option>
+            <option value="Payment">Payment</option>
+            <option value="Receipt">Receipt</option>
+        </select>
+    </div>
+
+    <hr />
+    <h4>Voucher Lines</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Narration</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.VoucherLines.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <select asp-for="VoucherLines[@i].AccountID" class="form-control">
+                            <option value="">-- Select Account --</option>
+                            @foreach (var acc in Model.AccountList)
+                            {
+                                if (acc.Id == Model.VoucherLines[@i].AccountID)
+                                {
+                                    <option value="@acc.Id" selected>@acc.AccountName</option>
+                                }
+                                else
+                                {
+                                    <option value="@acc.Id">@acc.AccountName</option>
+                                }
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <input asp-for="VoucherLines[@i].DebitAmount" class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="VoucherLines[@i].CreditAmount" class="form-control" />
+                    </td>
+                    <td>
+                        <input asp-for="VoucherLines[@i].Narration" class="form-control" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Save Voucher</button>
+</form>

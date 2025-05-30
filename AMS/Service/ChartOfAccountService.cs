@@ -61,6 +61,63 @@ namespace AMS.Service
 
             return lookup[null].ToList(); // Top-level accounts
         }
+
+
+
+        public async Task<ChartOfAccount> GetAccountByIdAsync(int id)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            var cmd = new SqlCommand("SELECT * FROM ChartOfAccounts WHERE Id = @Id", conn);
+            cmd.Parameters.AddWithValue("@Id", id);
+
+            await conn.OpenAsync();
+            var reader = await cmd.ExecuteReaderAsync();
+
+            ChartOfAccount account = null;
+            if (await reader.ReadAsync())
+            {
+                account = new ChartOfAccount
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
+                    AccountName = reader["AccountName"].ToString(),
+                    AccountType = reader["AccountType"].ToString(),
+                    ParentId = reader["ParentId"] as int?
+                };
+            }
+
+            return account;
+        }
+
+
+        public async Task SaveVoucherAsync(VoucherHeaderDTO header, List<VoucherLineDTO> lines,int userID)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand("sp_SaveVoucher", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            command.Parameters.AddWithValue("@VoucherDate", header.VoucherDate);
+            command.Parameters.AddWithValue("@ReferenceNo", header.ReferenceNo ?? "");
+            command.Parameters.AddWithValue("@VoucherType", header.VoucherType);
+            command.Parameters.AddWithValue("@CreatedBy", userID);
+
+            var table = new DataTable();
+            table.Columns.Add("AccountID", typeof(int));
+            table.Columns.Add("DebitAmount", typeof(decimal));
+            table.Columns.Add("CreditAmount", typeof(decimal));
+            table.Columns.Add("Narration", typeof(string));
+
+            foreach (var item in lines)
+                table.Rows.Add(item.AccountID, item.DebitAmount, item.CreditAmount, item.Narration);
+
+            var tvpParam = command.Parameters.AddWithValue("@VoucherLines", table);
+            tvpParam.SqlDbType = SqlDbType.Structured;
+            tvpParam.TypeName = "VoucherLineType";
+
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+        }
     }
 
 }

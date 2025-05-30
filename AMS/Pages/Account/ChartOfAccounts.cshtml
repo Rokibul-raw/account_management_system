@@ -12,28 +12,46 @@
 }
 
 <form method="post">
+    <input type="hidden" asp-for="AccountForm.Id" />
     <div class="mb-3">
-        <label asp-for="NewAccount.AccountName" class="form-label">Account Name</label>
-        <input asp-for="NewAccount.AccountName" class="form-control" />
+        <label asp-for="AccountForm.AccountName" class="form-label">Account Name</label>
+        <input asp-for="AccountForm.AccountName" class="form-control" />
     </div>
 
     <div class="mb-3">
-        <label asp-for="NewAccount.AccountType" class="form-label">Account Type</label>
-        <input asp-for="NewAccount.AccountType" class="form-control" />
+        <label asp-for="AccountForm.AccountType" class="form-label">Account Type</label>
+        <input asp-for="AccountForm.AccountType" class="form-control" />
     </div>
 
     <div class="mb-3">
-        <label asp-for="NewAccount.ParentId" class="form-label">Parent Account</label>
-        <select asp-for="NewAccount.ParentId" class="form-control">
+        <label asp-for="AccountForm.ParentId" class="form-label">Parent Account</label>
+        <select asp-for="AccountForm.ParentId" class="form-control">
             <option value="">-- Top Level --</option>
-            @foreach (var acc in Model.AllAccounts)
+            @if (Model.AccountForm != null)
             {
-                <option value="@acc.Id">@acc.AccountName</option>
+                @foreach (var acc in Model.AllAccounts)
+                {
+                    if (acc.Id != Model.AccountForm.Id)
+                    {
+                        <option value="@acc.Id" selected="@(acc.Id == Model.AccountForm.ParentId)">
+                            @acc.AccountName
+                        </option>
+                    }
+                }
+            }
+            else
+            {
+                @foreach (var acc in Model.AllAccounts)
+                {
+                    <option value="@acc.Id">@acc.AccountName</option>
+                }
             }
         </select>
     </div>
 
-    <button type="submit" class="btn btn-primary">Add Account</button>
+    <button type="submit" class="btn btn-primary">
+        @(Model.AccountForm != null && Model.AccountForm.Id > 0 ? "Update Account" : "Add Account")
+    </button>
 
 
     <hr />
