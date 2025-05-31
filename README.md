@@ -157,20 +157,28 @@ ALTER TABLE [dbo].[VoucherLines] ADD DEFAULT ((0)) FOR [CreditAmount];
 ALTER TABLE [dbo].[RoleModules] WITH CHECK ADD FOREIGN KEY([ModuleId]) REFERENCES [dbo].[Modules] ([Id]);
 ALTER TABLE [dbo].[VoucherLines] WITH CHECK ADD FOREIGN KEY([VoucherID]) REFERENCES [dbo].[VoucherHeaders] ([VoucherID]);
 COMMIT;
+ ## UDTT
+
+CREATE TYPE [dbo].[VoucherLineType] AS TABLE
+(
+    AccountID INT,
+    DebitAmount DECIMAL(18,2),
+    CreditAmount DECIMAL(18,2),
+    Narration NVARCHAR(200)
+)
+
 
 
 ## Exicute this command for create storeProcidure
 
-store procidure:1
---Add module with role
-
 USE [AccountDB]
 GO
 
-/****** Object:  StoredProcedure [dbo].[AddModuleAndAssignToRole]    Script Date: 5/31/2025 2:04:40 AM ******/
+-- =============================================
+-- 1. Add Module and Assign to Role
+-- =============================================
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -206,21 +214,15 @@ BEGIN
 END
 GO
 
-
-
-
-store procudure 2:
-for getModule:
-
-
-
-CREATE PROCEDURE GetModulesForUserRoles
+-- =============================================
+-- 2. Get Modules for User Roles
+-- =============================================
+CREATE PROCEDURE [dbo].[GetModulesForUserRoles]
     @UserName NVARCHAR(256)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- Get roles for the user
     SELECT DISTINCT m.Id, m.Name, m.Url
     FROM Modules m
     INNER JOIN RoleModules rm ON m.Id = rm.ModuleId
@@ -232,15 +234,13 @@ BEGIN
         WHERE r.Id = ur.RoleId
     )
 END
+GO
 
-
-
-
-
---for account
-
-CREATE PROCEDURE sp_ManageChartOfAccounts
-    @Action NVARCHAR(10),         -- 'Insert', 'Update', 'Delete'
+-- =============================================
+-- 3. Manage Chart of Accounts (Insert/Update/Delete)
+-- =============================================
+CREATE PROCEDURE [dbo].[sp_ManageChartOfAccounts]
+    @Action NVARCHAR(10),            -- 'Insert', 'Update', 'Delete'
     @Id INT = NULL,
     @AccountName NVARCHAR(100) = NULL,
     @ParentId INT = NULL,
@@ -254,7 +254,6 @@ BEGIN
         INSERT INTO ChartOfAccounts (AccountName, ParentId, AccountType)
         VALUES (@AccountName, @ParentId, @AccountType)
     END
-
     ELSE IF @Action = 'Update'
     BEGIN
         UPDATE ChartOfAccounts
@@ -263,17 +262,26 @@ BEGIN
             AccountType = @AccountType
         WHERE Id = @Id
     END
-
     ELSE IF @Action = 'Delete'
     BEGIN
         DELETE FROM ChartOfAccounts WHERE Id = @Id
     END
 END
+GO
 
+-- =============================================
+-- 4. Save Voucher with Table-Valued Parameter
+-- =============================================
+-- Required TVP: CREATE TYPE [dbo].[VoucherLineType] AS TABLE
+-- (
+--   AccountID INT,
+--   DebitAmount DECIMAL(18,2),
+--   CreditAmount DECIMAL(18,2),
+--   Narration NVARCHAR(200)
+-- )
+-- Ensure to create this first before using the SP below.
 
---For Voucher
-
-CREATE PROCEDURE sp_SaveVoucher
+CREATE PROCEDURE [dbo].[sp_SaveVoucher]
     @VoucherDate DATE,
     @ReferenceNo NVARCHAR(50),
     @VoucherType NVARCHAR(20),
@@ -291,17 +299,17 @@ BEGIN
     INSERT INTO VoucherLines (VoucherID, AccountID, DebitAmount, CreditAmount, Narration)
     SELECT @VoucherID, AccountID, DebitAmount, CreditAmount, Narration
     FROM @VoucherLines;
-END;
+END
+GO
 
-
-
-
-//for get voucher
-
-
-CREATE PROCEDURE sp_GetVoucherList
+-- =============================================
+-- 5. Get Voucher List
+-- =============================================
+CREATE PROCEDURE [dbo].[sp_GetVoucherList]
 AS
 BEGIN
+    SET NOCOUNT ON;
+
     SELECT 
         vh.VoucherID,
         vh.VoucherDate,
@@ -309,7 +317,6 @@ BEGIN
         vh.VoucherType,
         vh.CreatedBy,
         vh.CreatedDate,
-
         vl.LineID,
         vl.AccountID,
         coa.AccountName,
@@ -322,6 +329,7 @@ BEGIN
     INNER JOIN ChartOfAccounts coa ON vl.AccountID = coa.Id
     ORDER BY vh.VoucherDate DESC, vh.VoucherID DESC;
 END
+GO
 
 
 
