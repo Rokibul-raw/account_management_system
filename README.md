@@ -14,201 +14,149 @@ then run the project again comment it
 
 
 
-
-# Run this Query for create table 
-
-
-
-``USE [AccountDB]
-GO
-/****** Object:  Table [dbo].[ChartOfAccounts]    
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
+ ##  ChartOfAccounts Table
+sql
+Copy
+Edit
 CREATE TABLE [dbo].[ChartOfAccounts](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[AccountName] [nvarchar](100) NOT NULL,
-	[ParentId] [int] NULL,
-	[AccountType] [nvarchar](50) NULL,
-	[IsActive] [bit] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+    [Id] [int] IDENTITY(1,1) NOT NULL,
+      NOT NULL,
+    [ParentId] [int] NULL,
+      NULL,
+    [IsActive] [bit] NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
 GO
-/****** Object:  Table [dbo].[Modules]    
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO``
+
+SET IDENTITY_INSERT [dbo].[ChartOfAccounts] ON;
+INSERT [dbo].[ChartOfAccounts] ([Id], [AccountName], [ParentId], [AccountType], [IsActive]) VALUES 
+(1, N'Bank', NULL, N'Savings', 1),
+(3, N'Cash', NULL, N'Hand Cash', 1),
+(4, N' Petty Cash', 3, N'Hand Cash', 1),
+(6, N'Accounts Receivable - Customers', 5, N'Normal', 1),
+(7, N'DBBL', 1, N'Salary', 1),
+(8, N'FSIB', 1, N'Deposit', 1),
+(9, N'Receivables', NULL, N'Normal', 1),
+(10, N'Employee Advances', 9, N'Normal', 1);
+SET IDENTITY_INSERT [dbo].[ChartOfAccounts] OFF;
+COMMIT;
+ ##  Modules Table
+sql
+Copy
+Edit
 CREATE TABLE [dbo].[Modules](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](100) NOT NULL,
-	[Url] [nvarchar](300) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO``
-/****** Object:  Table [dbo].[RoleModules]  
-SET ANSI_NULLS ON
+    [Id] [int] IDENTITY(1,1) NOT NULL,
+    [Name] nvarchar NOT NULL,
+    [Url] nvarchar NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
 GO
-SET QUOTED_IDENTIFIER ON
-GO``
+
+SET IDENTITY_INSERT [dbo].[Modules] ON;
+INSERT [dbo].[Modules] ([Id], [Name], [Url]) VALUES 
+(1, N'Report', N'Report/Report'),
+(2, N'Dashboard', N'Index'),
+(3, N'Add Module', N'Module/AddModule'),
+(4, N'Add Account', N'Account/ChartOfAccounts'),
+(5, N'Add Voucher', N'Account/Voucher');
+SET IDENTITY_INSERT [dbo].[Modules] OFF;
+COMMIT;
+ ##  RoleModules Table
+sql
+Copy
+Edit
 CREATE TABLE [dbo].[RoleModules](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[RoleName] [nvarchar](50) NOT NULL,
-	[ModuleId] [int] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+    [Id] [int] IDENTITY(1,1) NOT NULL,
+    [RoleName] nvarchar NOT NULL,
+    [ModuleId] [int] NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
 GO
-/****** Object:  Table [dbo].[VoucherHeaders]    
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
+
+SET IDENTITY_INSERT [dbo].[RoleModules] ON;
+INSERT [dbo].[RoleModules] ([Id], [RoleName], [ModuleId]) VALUES 
+(1, N'Viewer', 1),
+(2, N'Admin', 1),
+(3, N'Accountant', 1),
+(4, N'Admin', 2),
+(5, N'Admin', 3),
+(6, N'Admin', 4),
+(7, N'Admin', 5),
+(8, N'Accountant', 5);
+SET IDENTITY_INSERT [dbo].[RoleModules] OFF;
+COMMIT;
+ ##  VoucherHeaders Table
+sql
+Copy
+Edit
 CREATE TABLE [dbo].[VoucherHeaders](
-	[VoucherID] [int] IDENTITY(1,1) NOT NULL,
-	[VoucherDate] [date] NOT NULL,
-	[ReferenceNo] [nvarchar](50) NULL,
-	[VoucherType] [nvarchar](20) NOT NULL,
-	[CreatedBy] [int] NOT NULL,
-	[CreatedDate] [datetime] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[VoucherID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+    [VoucherID] [int] IDENTITY(1,1) NOT NULL,
+    [VoucherDate] [date] NOT NULL,
+    [ReferenceNo] nvarchar NULL,
+    [VoucherType] nvarchar NOT NULL,
+    [CreatedBy] [int] NOT NULL,
+    [CreatedDate] [datetime] NOT NULL,
+    PRIMARY KEY CLUSTERED ([VoucherID] ASC)
+);
 GO
-/****** Object:  Table [dbo].[VoucherLines]    
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
+
+SET IDENTITY_INSERT [dbo].[VoucherHeaders] ON;
+INSERT [dbo].[VoucherHeaders] ([VoucherID], [VoucherDate], [ReferenceNo], [VoucherType], [CreatedBy], [CreatedDate]) 
+VALUES (1, '2025-05-30', N'45367829', N'Journal', 0, '2025-05-31T00:54:59.243');
+SET IDENTITY_INSERT [dbo].[VoucherHeaders] OFF;
+COMMIT;
+ ##  VoucherLines Table
+sql
+Copy
+Edit
 CREATE TABLE [dbo].[VoucherLines](
-	[LineID] [int] IDENTITY(1,1) NOT NULL,
-	[VoucherID] [int] NULL,
-	[AccountID] [int] NOT NULL,
-	[DebitAmount] [decimal](18, 2) NULL,
-	[CreditAmount] [decimal](18, 2) NULL,
- 
-	[Narration] [nvarchar](200) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[LineID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+    [LineID] [int] IDENTITY(1,1) NOT NULL,
+    [VoucherID] [int] NULL,
+    [AccountID] [int] NOT NULL,
+    [DebitAmount] [decimal](18, 2) NULL,
+    [CreditAmount] [decimal](18, 2) NULL,
+      NULL,
+    PRIMARY KEY CLUSTERED ([LineID] ASC)
+);
 GO
-/****** Object:  Table [dbo].[Vouchers]    
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
+
+SET IDENTITY_INSERT [dbo].[VoucherLines] ON;
+INSERT [dbo].[VoucherLines] ([LineID], [VoucherID], [AccountID], [DebitAmount], [CreditAmount], [Narration])
+VALUES (1, 1, 1, 1000.00, 20000.00, N'something happen');
+SET IDENTITY_INSERT [dbo].[VoucherLines] OFF;
+COMMIT;
+ ##  Vouchers Table
+sql
+Copy
+Edit
 CREATE TABLE [dbo].[Vouchers](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[VoucherDate] [date] NULL,
-	[ReferenceNo] [nvarchar](50) NULL,
-	[VoucherType] [nvarchar](20) NULL,
-	[CreatedBy] [int] NULL,
-	[AccountID] [int] NULL,
-	[DebitAmount] [decimal](18, 2) NULL,
-	[CreditAmount] [decimal](18, 2) NULL,
-	[Narration] [nvarchar](200) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+    [Id] [int] IDENTITY(1,1) NOT NULL,
+    [VoucherDate] [date] NULL,
+    [ReferenceNo] nvarchar NULL,
+    [VoucherType] nvarchar NULL,
+    [CreatedBy] [int] NULL,
+    [AccountID] [int] NULL,
+    [DebitAmount] [decimal](18, 2) NULL,
+    [CreditAmount] [decimal](18, 2) NULL,
+    [Narration] nvarchar NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
 GO
-SET IDENTITY_INSERT [dbo].[ChartOfAccounts] ON 
-GO
-INSERT [dbo].[ChartOfAccounts] ([Id], [AccountName], [ParentId], [AccountType], [IsActive]) VALUES (1, N'Bank', NULL, N'Savings', 1)
-GO
-INSERT [dbo].[ChartOfAccounts] ([Id], [AccountName], [ParentId], [AccountType], [IsActive]) VALUES (3, N'Cash', NULL, N'Hand Cash', 1)
-GO
-INSERT [dbo].[ChartOfAccounts] ([Id], [AccountName], [ParentId], [AccountType], [IsActive]) VALUES (4, N' Petty Cash', 3, N'Hand Cash', 1)
-GO
-INSERT [dbo].[ChartOfAccounts] ([Id], [AccountName], [ParentId], [AccountType], [IsActive]) VALUES (6, N'Accounts Receivable - Customers', 5, N'Normal', 1)
-GO
-INSERT [dbo].[ChartOfAccounts] ([Id], [AccountName], [ParentId], [AccountType], [IsActive]) VALUES (7, N'DBBL', 1, N'Salary', 1)
-GO
-INSERT [dbo].[ChartOfAccounts] ([Id], [AccountName], [ParentId], [AccountType], [IsActive]) VALUES (8, N'FSIB', 1, N'Deposit', 1)
-GO
-INSERT [dbo].[ChartOfAccounts] ([Id], [AccountName], [ParentId], [AccountType], [IsActive]) VALUES (9, N'Receivables', NULL, N'Normal', 1)
-GO
-INSERT [dbo].[ChartOfAccounts] ([Id], [AccountName], [ParentId], [AccountType], [IsActive]) VALUES (10, N'Employee Advances', 9, N'Normal', 1)
-GO
-SET IDENTITY_INSERT [dbo].[ChartOfAccounts] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Modules] ON 
-GO
-INSERT [dbo].[Modules] ([Id], [Name], [Url]) VALUES (1, N'Report', N'Report/Report')
-GO
-INSERT [dbo].[Modules] ([Id], [Name], [Url]) VALUES (2, N'Dashboard', N'Index')
-GO
-INSERT [dbo].[Modules] ([Id], [Name], [Url]) VALUES (3, N'Add Module', N'Module/AddModule')
-GO
-INSERT [dbo].[Modules] ([Id], [Name], [Url]) VALUES (4, N'Add Account', N'Account/ChartOfAccounts')
-GO
-INSERT [dbo].[Modules] ([Id], [Name], [Url]) VALUES (5, N'Add Voucher', N'Account/Voucher')
-GO
-SET IDENTITY_INSERT [dbo].[Modules] OFF
-GO
-SET IDENTITY_INSERT [dbo].[RoleModules] ON 
-GO
-INSERT [dbo].[RoleModules] ([Id], [RoleName], [ModuleId]) VALUES (1, N'Viewer', 1)
-GO
-INSERT [dbo].[RoleModules] ([Id], [RoleName], [ModuleId]) VALUES (2, N'Admin', 1)
-GO
-INSERT [dbo].[RoleModules] ([Id], [RoleName], [ModuleId]) VALUES (3, N'Accountant', 1)
-GO
-INSERT [dbo].[RoleModules] ([Id], [RoleName], [ModuleId]) VALUES (4, N'Admin', 2)
-GO
-INSERT [dbo].[RoleModules] ([Id], [RoleName], [ModuleId]) VALUES (5, N'Admin', 3)
-GO
-INSERT [dbo].[RoleModules] ([Id], [RoleName], [ModuleId]) VALUES (6, N'Admin', 4)
-GO
-INSERT [dbo].[RoleModules] ([Id], [RoleName], [ModuleId]) VALUES (7, N'Admin', 5)
-GO
-INSERT [dbo].[RoleModules] ([Id], [RoleName], [ModuleId]) VALUES (8, N'Accountant', 5)
-GO
-SET IDENTITY_INSERT [dbo].[RoleModules] OFF
-GO
-SET IDENTITY_INSERT [dbo].[VoucherHeaders] ON 
-GO
-INSERT [dbo].[VoucherHeaders] ([VoucherID], [VoucherDate], [ReferenceNo], [VoucherType], [CreatedBy], [CreatedDate]) VALUES (1, CAST(N'2025-05-30' AS Date), N'45367829', N'Journal', 0, CAST(N'2025-05-31T00:54:59.243' AS DateTime))
-GO
-SET IDENTITY_INSERT [dbo].[VoucherHeaders] OFF
-GO
-SET IDENTITY_INSERT [dbo].[VoucherLines] ON 
-GO
-INSERT [dbo].[VoucherLines] ([LineID], [VoucherID], [AccountID], [DebitAmount], [CreditAmount], [Narration]) VALUES (1, 1, 1, CAST(1000.00 AS Decimal(18, 2)), CAST(20000.00 AS Decimal(18, 2)), N'something happen')
-GO
-SET IDENTITY_INSERT [dbo].[VoucherLines] OFF
-GO
-ALTER TABLE [dbo].[ChartOfAccounts] ADD  DEFAULT ((1)) FOR [IsActive]
-GO
-ALTER TABLE [dbo].[VoucherHeaders] ADD  DEFAULT (getdate()) FOR [CreatedDate]
-GO
-ALTER TABLE [dbo].[VoucherLines] ADD  DEFAULT ((0)) FOR [DebitAmount]
-GO
-ALTER TABLE [dbo].[VoucherLines] ADD  DEFAULT ((0)) FOR [CreditAmount]
-GO
-ALTER TABLE [dbo].[RoleModules]  WITH CHECK ADD FOREIGN KEY([ModuleId])
-REFERENCES [dbo].[Modules] ([Id])
-GO
-ALTER TABLE [dbo].[VoucherLines]  WITH CHECK ADD FOREIGN KEY([VoucherID])
-REFERENCES [dbo].[VoucherHeaders] ([VoucherID])
-GO
+COMMIT;
+ ## Constraints & Defaults
+sql
+Copy
+Edit
+-- Default Constraints
+ALTER TABLE [dbo].[ChartOfAccounts] ADD DEFAULT ((1)) FOR [IsActive];
+ALTER TABLE [dbo].[VoucherHeaders] ADD DEFAULT (getdate()) FOR [CreatedDate];
+ALTER TABLE [dbo].[VoucherLines] ADD DEFAULT ((0)) FOR [DebitAmount];
+ALTER TABLE [dbo].[VoucherLines] ADD DEFAULT ((0)) FOR [CreditAmount];
 
-
-
+-- Foreign Keys
+ALTER TABLE [dbo].[RoleModules] WITH CHECK ADD FOREIGN KEY([ModuleId]) REFERENCES [dbo].[Modules] ([Id]);
+ALTER TABLE [dbo].[VoucherLines] WITH CHECK ADD FOREIGN KEY([VoucherID]) REFERENCES [dbo].[VoucherHeaders] ([VoucherID]);
+COMMIT;
 
 
 ## Exicute this command for create storeProcidure
