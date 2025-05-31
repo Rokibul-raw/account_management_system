@@ -19,7 +19,7 @@ then run the project again comment it
 
 
 
-USE [AccountDB]
+`USE [AccountDB]
 GO
 /****** Object:  Table [dbo].[ChartOfAccounts]    
 SET ANSI_NULLS ON
@@ -42,7 +42,7 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
-GO
+GO`
 CREATE TABLE [dbo].[Modules](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [nvarchar](100) NOT NULL,
@@ -52,7 +52,7 @@ PRIMARY KEY CLUSTERED
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
-GO
+GO`
 /****** Object:  Table [dbo].[RoleModules]  
 SET ANSI_NULLS ON
 GO
@@ -97,6 +97,7 @@ CREATE TABLE [dbo].[VoucherLines](
 	[AccountID] [int] NOT NULL,
 	[DebitAmount] [decimal](18, 2) NULL,
 	[CreditAmount] [decimal](18, 2) NULL,
+ 
 	[Narration] [nvarchar](200) NULL,
 PRIMARY KEY CLUSTERED 
 (
